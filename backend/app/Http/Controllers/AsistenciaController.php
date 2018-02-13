@@ -9,7 +9,7 @@ use App\Http\Controllers\Controller;
 
 // Activamos uso de caché.
 use Illuminate\Support\Facades\Cache;
-
+use DateTime;
 class AsistenciaController extends Controller
 {
     /**
@@ -19,27 +19,18 @@ class AsistenciaController extends Controller
      */
     public function index()
     {
-        //cargar todas las cat
-        //$categorias = \App\Categoria::all();
+        $asistencia=\App\Asistencia::get();
+        $personal=\App\Personal::get();
 
-        // Activamos la caché de los resultados.
-        //  Cache::remember('clave', $minutes, function()
-        $categorias=Cache::remember('categorias',5, function()
-        {
-            // Caché válida durante 5 min.
-            //cargar todos las categorias
-            return \App\Categoria::with('tipo')->with('rubro')->get();
-        });
-
-        if(count($categorias) == 0){
-            return response()->json(['error'=>'No existen categorías.'], 404);          
-        }else{
-            return response()->json(['categorias'=>$categorias], 200);
-        } 
-        
+        for ($i=0; $i < count($asistencia); $i++) { 
+            for ($j=0; $j < count($personal); $j++) { 
+                if ($asistencia[$i]->legajo==$personal[$j]->LEGAJO) {
+                    $asistencia[$i]->persona=$personal[$j];
+                }
+            }
+        }
+        return response()->json(['asistencia'=>$asistencia], 200);
     }
-
-    
 
     /**
      * Show the form for creating a new resource.
@@ -58,18 +49,33 @@ class AsistenciaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        //return $request->input('imagen');
+    {   //return $request->input('id');
         $data = explode( ',', $request->input('imagen') );
         $file= base64_decode($data[ 1 ]);
         $folder="/imagenes/";
-        $nombre="a.png";
+        $hora=new DateTime();
+        $hora= $hora->format('Y-m-d H:i:s');
+        //return $request->input('id');
+        $nombre=$request->input('id')."-".$this->generarCodigo(6).".png";
+        //return 1;
         $destino= public_path().$folder;
         file_put_contents(public_path().$folder.$nombre,$file);
-        return 1;
+
+        $asistencia=new \App\Asistencia;
+        $asistencia->IDENTIFICA_ID=$request->input('identifica');
+        $asistencia->legajo=$request->input('legajo');
+        $asistencia->hora=$hora;
+        $asistencia->imagen=$request->input('ruta').'imagenes/'.$nombre;
+        if ($asistencia->save()) {
+             return response()->json(['asistencia'=>$asistencia], 200);
+        }else{
+             return response()->json(['asistencia'=>$asistencia], 500);
+        }
+       
+        //return asistencia;
         /*Image::make($request->input('imagen'))->save('imagenes');
         return 1;*/
-        return $this->base64_to_jpeg($request->input('imagen'),'prueba.jpg');
+        //return $this->base64_to_jpeg($request->input('imagen'),'prueba.jpg');
     }
 
     public function base64_to_jpeg($base64_string, $output_file) {
@@ -108,6 +114,17 @@ class AsistenciaController extends Controller
 
         
     }
+
+    function generarCodigo($longitud) {
+
+     $key = '';
+     $pattern = '1234567890abcdefghijklmnopqrstuvwxyz';
+     $max = strlen($pattern)-1;
+     for($i=0;$i < $longitud;$i++) $key .= $pattern{mt_rand(0,$max)};
+
+     return $key;
+    }
+ 
 
     /**
      * Display the specified resource.

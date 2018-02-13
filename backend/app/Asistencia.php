@@ -24,7 +24,7 @@ class Asistencia extends Model
      *
      * @var array
      */
-    protected $fillable = ['imagen'];
+    protected $fillable = ['id','IDENTIFICA_ID','imagen','hora','legajo'];
 
     /**
      * The attributes excluded from the model's JSON form.

@@ -1,0 +1,77 @@
+<div class="bg" style="height: 800px;">
+  <div style="text-align:center">
+    <br><br>
+    <h1>Lista de Asistencias</h1>
+  </div>
+  
+  <br><br><br>
+
+  <div  style="text-align:center">
+    <!-- <a type="button" class="btn btn-secondary" [routerLink]="['/']">Inicio</a>
+    <a type="button" class="btn btn-secondary" [routerLink]="['/asistencia']">Log In</a> -->
+    <a type="button" class="btn btn-secondary" [routerLink]="['/asistencia']">Ir a tomar asistencia</a>
+  </div>
+  <br><br><br>
+  <ng-template #template>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Foto</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body" style="text-align:center">
+      <img src="{{imagen}}" alt="" style="width:350px">
+    </div>
+  </ng-template>
+
+
+  
+  <div class="form-group" style="text-align:center" *ngIf="!ver">
+          <div class="form-group form-black label-floating is-empty">
+               <label class="labels" style="font-size: 18px; font-weight: bold">Buscar: </label>
+              <input  class="form-control" type="text"  id="inputName" [(ngModel)]="inputName" (ngModelChange)="FilterByName()"/>
+               <br>
+          </div>
+          <table class="table table-striped"  style="background-color: white;">
+            <thead>
+              <th>ID</th>
+              <th>nombre</th>
+              <th>DNI</th>
+              <!-- <th>Legajo</th> -->
+              <th>Hora</th>
+              <th></th>
+            </thead>
+            <tbody>
+               <tr *ngFor="let item of items">
+                  
+                  <td>{{item.IDENTIFICA_ID}}</td>
+                  <td>{{item.persona.NOMBRES}} {{item.persona.APELLIDOS}}</td>
+                  <td>{{item.persona.NRO_DOCUME}}</td>
+                  <!-- <td>{{item.legajo}}</td> -->
+                  <td>{{item.hora}}</td>
+                  <td><button type="button" class="btn btn-success" (click)="openModal(template,item)">Ver Foto</button></td>
+               </tr>
+            </tbody>
+          </table>
+            <div class="btn-toolbar" role="toolbar" style="margin: 0;">
+              <div class="btn-group">
+                 <label style="margin-top:10px">Página {{currentIndex}}/{{pageNumber}} </label>
+              </div>
+              <div class="btn-group pull-right">
+                 <ul class="pagination" >
+                    <li [ngClass]="{'disabled': (currentIndex == 1 || pageNumber == 0)}" ><a  (click)="prevPage()">Atrás</a></li>
+                       <li *ngFor="let page of pagesIndex"  [ngClass]="{'active': (currentIndex == page)}">
+                          <a (click)="setPage(page)" >{{page}} </a>
+                       </li>
+                    <li [ngClass]="{'disabled': (currentIndex == pageNumber || pageNumber == 0)}" ><a   (click)="nextPage()">Siguiente</a></li>
+                 </ul>
+              </div>
+            </div>
+  </div>
+      
+  <div *ngIf="ver">
+
+   
+
+
+

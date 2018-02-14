@@ -19,7 +19,20 @@ class PersonalController extends Controller
      */
     public function index()
     {
-        return \App\Personal::get();
+        $personal=\App\Personal::get();
+        $taller=(object) [ "entradaManana"=> "08:30:00",  "salidaManana"=> "12:00:00", "entradaTarde"=> "14:30:00", "salidaTarde"=> "19:00:00" ];
+        $transporte=(object) [ "entradaManana"=> "08:00:00", "salidaManana"=> "12:00:00",  "entradaTarde"=> "14:00:00", "salidaTarde"=> "18:00:00" ];
+        $yacimiento=(object) [ "entradaManana"=> "08:00:00", "salidaManana"=> "12:00:00", "entradaTarde"=> "14:00:00", "salidaTarde"=> "17:00:00" ];
+        for ($i=0; $i < count($personal); $i++) { 
+            if ($personal[$i]->tipo_horario=='taller') {
+                $personal[$i]->horario=$taller;
+            }else if ($personal[$i]->tipo_horario=='transporte') {
+                $personal[$i]->horario=$transporte;
+            }else{
+                $personal[$i]->horario=$yacimiento;
+            }
+        }
+        return $personal;
         
     }
 

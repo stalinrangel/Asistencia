@@ -9,6 +9,8 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app.routing';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
+import {ReversePipe} from './reverse';
+
 import { RutaService } from './services/ruta.service';
 import { AsistenciasComponent } from './asistencia/asistencias.component';
 import { ListaComponent } from './lista/lista.component';
@@ -17,7 +19,8 @@ import { ListaComponent } from './lista/lista.component';
   declarations: [
     AppComponent,
     AsistenciasComponent,
-    ListaComponent
+    ListaComponent,
+    ReversePipe
   ],
   imports: [
     BrowserModule,
@@ -27,7 +30,8 @@ import { ListaComponent } from './lista/lista.component';
     FormsModule,
     AppRoutingModule,
     RouterModule,
-    ModalModule.forRoot(),
+    ModalModule.forRoot()
+
   ],
   providers: [
     RutaService,

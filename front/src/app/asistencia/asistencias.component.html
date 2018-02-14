@@ -21,6 +21,8 @@
     <div class="form-group" style="text-align:center" >
       <strong>{{hora | date :  "dd-MM-y hh:mm:ss"}}</strong>
       <br>
+      <strong *ngIf="persona.retraso==1" style="color: red">¡Estas retrasado!</strong>
+      <br>
       <label for="usr"><strong>Persona:</strong> </label>
       <br>
       <input type="text" class="form-control" style="width: 250px;display: -webkit-inline-box;" [(ngModel)]="persona.NOMBRES" disabled>

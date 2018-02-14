@@ -3,6 +3,7 @@ import { HttpClient, HttpParams  } from '@angular/common/http';
 import { RutaService } from '../services/ruta.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
+import {ReversePipe} from '../reverse';
 
 @Component({
   //selector: 'app-root',

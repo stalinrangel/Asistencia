@@ -35,7 +35,7 @@ export class AsistenciasComponent {
     //this.http.get('https://vivoargentina.com/asistencia/backend/public/personal')
     //this.http.get('http://localhost/asistencias/backend/public/personal')
    
-    this.http.get(this.ruta.get_ruta()+'/personal')
+    this.http.get(this.ruta.get_ruta()+'personal')
      .toPromise()
      .then(
      data => {
@@ -56,15 +56,61 @@ export class AsistenciasComponent {
     for (var i = 0; i < this.personal.length; i++) {
       if(this.legajo!='') {
         if(this.personal[i].LEGAJO==this.legajo) {
-          console.log(this.legajo);
           this.persona=this.personal[i];
-          this.ver=true;
-          this.now = moment();
-          this.hora= this.now.format();
-          console.log(this.hora);
+          console.log(this.persona);
+          this.http.get(this.ruta.get_ruta()+'hora')
+           .toPromise()
+           .then(
+           data => {
+              console.log(data);
+              
+              this.ver=true;
+              this.now = moment(data);
+              this.hora= this.now.format();
+              console.log(this.hora);
+              //var horaActual=moment('16:47:00','hh:mm:ss');
+              var horaActual=moment(this.now,'hh:mm:ss');
+              var turno=moment('13:00:00','hh:mm:ss');
+              
+              //si es turno de manana
+              if(!turno.isBefore(horaActual)) {
+                console.log('manana');
+                var horaPermitida= moment(this.persona.horario.entradaManana,'hh:mm:ss');
+                var salidaManana=moment('11:00:00','hh:mm:ss');
+                if(salidaManana.isBefore(horaActual)) {
+                  console.log('manana salida');
+                  this.persona.retraso=0;
+                }else{
+                  console.log('manana entrada');
+                  if(horaPermitida.isBefore(horaActual)){
+                    this.persona.retraso=1;
+                  }else{
+                    this.persona.retraso=0;
+                  }
+                }
+              }else{ //si es turno de la tarde
+                console.log('tarde');
+                var horaPermitida= moment(this.persona.horario.entradaTarde,'hh:mm:ss');
+                var salidaTarde=moment('16:00:00','hh:mm:ss');
+                if(salidaTarde.isBefore(horaActual)) {
+                  console.log('tarde salida');
+                  this.persona.retraso=0;
+                }else{
+                  console.log('tarde entrada');
+                  if(horaPermitida.isBefore(horaActual)){
+                    this.persona.retraso=1;
+                  }else{
+                    this.persona.retraso=0;
+                  }
+                }
+              }
+              
+            },
+           msg => { 
+             console.log(msg);
+           });
         }
       }
-      
     }
   }
   atras(){
@@ -110,11 +156,12 @@ export class AsistenciasComponent {
       identifica:this.persona.IDENTIFICA,
       legajo:this.persona.LEGAJO,
       hora:JSON.stringify(this.hora),
-      ruta:this.ruta.get_ruta()
+      ruta:this.ruta.get_ruta(),
+      retraso: this.persona.retraso
     }
     console.log(send);
     //this.http.post('https://vivoargentina.com/asistencia/backend/public/asistencia',send)
-    this.http.post(this.ruta.get_ruta()+'/asistencia',send)
+    this.http.post(this.ruta.get_ruta()+'asistencia',send)
      .toPromise()
      .then(
      data => {

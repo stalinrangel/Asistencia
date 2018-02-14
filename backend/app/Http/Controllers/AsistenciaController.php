@@ -29,7 +29,18 @@ class AsistenciaController extends Controller
                 }
             }
         }
+        $asistencia2=[];
+        for ($i=count($asistencia)-1; $i > -1; $i--) { 
+            array_push($asistencia2,$asistencia[$i]);
+        }
+        $asistencia= $asistencia2;
         return response()->json(['asistencia'=>$asistencia], 200);
+    }
+    public function hora()
+    {   
+        $hora=new DateTime();
+        $hora= $hora->format('Y-m-d H:i:s');
+        return json_encode($hora);
     }
 
     /**
@@ -65,6 +76,7 @@ class AsistenciaController extends Controller
         $asistencia->IDENTIFICA_ID=$request->input('identifica');
         $asistencia->legajo=$request->input('legajo');
         $asistencia->hora=$hora;
+        $asistencia->retraso=$request->input('retraso');
         $asistencia->imagen=$request->input('ruta').'imagenes/'.$nombre;
         if ($asistencia->save()) {
              return response()->json(['asistencia'=>$asistencia], 200);

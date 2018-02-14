@@ -32,6 +32,7 @@ Route::group(  ['middleware' =>'cors'], function(){
 
         Route::get('/asistencia','AsistenciaController@index');
         Route::post('/asistencia','AsistenciaController@store');
+        Route::get('/hora','AsistenciaController@hora');
 
         Route::get('/personal','PersonalController@index');
 
